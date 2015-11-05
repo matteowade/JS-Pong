@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+
+        @keyframes bad {
+            from {color: black;}
+            to {color: red;}
+        }
+
+        @keyframes good {
+            from {color: black;}
+            to {color: green;}
+        }
+
+        .game-area {
+            position: relative;
+            display: inline-block;
+        }
+        .controls {
+            position: absolute;
+            top: 30%;
+            width: 100%;
+            text-align: center;
+        }
+        * { 
+            padding: 0; 
+            margin: 0; 
+            font-family: 'helvetica';
+        }
+        canvas {
+            background: #eee; 
+            display: block; 
+            margin: 0 auto; 
+        }
+        #gameMessages {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px auto 10px auto;
+            text-align: center;
+            
+        }
+
+        #gameMessages.bad {
+            animation-name: bad;
+            animation-duration: .1s;
+            animation-iteration-count: infinite;
+        }
+
+        #gameMessages.good {
+            animation-name: good;
+            animation-duration: .1s;
+            animation-iteration-count: infinite;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 0 auto;
+        }
+        #startButton {
+            display: block;
+        }
+        #startButton.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-area">
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <div class="controls">
+        <div id="gameMessages"></div>
+        <button id="startButton">Start</button>
+    </div>
+</div>
+
+<script>
+    var canvas = document.getElementById("myCanvas"),
+    ctx = canvas.getContext("2d"),
+    paddleHeight = 10,
+    paddleWidth = 75,
+    paddleX = (canvas.width-paddleWidth)/2,
+    blockHeight = 30,
+    blockWidth = 113,
+    ballX, // X position of ball
+    ballY, // Y position of ball
+    dx, // X direction of ball
+    dy, // Y direction of ball
+    ballRadius,
+    ballColor,
+    rightPressed = false,
+    leftPressed = false,
+    endOfGame = false,
+    topBlocks = [];
+
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
+        ctx.fillStyle = ballColor;
+        ctx.fill();
+        ctx.closePath;
+    }
+
+    function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function drawBlocks() {
+        for (var i = 0; i < topBlocks.length; i++) {
+            ctx.beginPath();
+            ctx.rect(topBlocks[i].x, topBlocks[i].y, blockWidth, blockHeight);
+            ctx.fillStyle = '#da7b29';
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+
+    function randomColor() {
+        return '#'+(Math.random().toString(16) + '0000000').slice(2, 8);
+    }
+
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        drawPaddle();
+        drawBlocks();
+        
+        if (rightPressed && paddleX < canvas.width-paddleWidth) {
+            paddleX += 7;
+        } else if (leftPressed && paddleX > 0) {
+            paddleX -= 7;
+        }
+
+        // Canvas left, right bounds collision detection for ball
+        if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
+            dx = -dx;
+        }
+
+        // Bounce off top
+        if (ballY + dy < ballRadius) {
+            dy = -dy;
+        // Check for paddle collision
+        } else if (ballY + dy > canvas.height - ballRadius - paddleHeight) {
+            if (ballX > paddleX && ballX < paddleX+paddleWidth) {
+                dy = -dy;
+                ballColor = randomColor();
+            } else {
+                endGame('lose');
+            }
+        }
+
+        // Check for blocks collision
+        if (blockCollisions(ballX + dx, ballY + dy) === true) {
+            if (topBlocks.length > 0) {
+                dy = -dy;
+            } else {
+                endGame('win');
+            }
+        }
+
+        ballX += dx;
+        ballY += dy;
+    }
+
+    function blockCollisions(ballX, ballY) {
+        for (var i = 0; i < topBlocks.length; i++) {
+            if (ballY < topBlocks[i].y+blockHeight+ballRadius && ballX+ballRadius > topBlocks[i].x && ballX-ballRadius < topBlocks[i].x+blockWidth ) {
+                ctx.clearRect(topBlocks[i].x, topBlocks[i].y, blockWidth, blockHeight);
+                topBlocks.splice(i, 1);
+                return true;
+            }
+        }
+    }
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+    document.getElementById('startButton').addEventListener('click', startGame);
+
+    function keyDownHandler(e) {
+        if (e.keyCode == 39) {
+            rightPressed = true;
+        } else if (e.keyCode == 37) {
+            leftPressed = true;
+        }
+    }
+
+    function keyUpHandler(e) {
+        if (e.keyCode == 39) {
+            rightPressed = false;
+        } else if (e.keyCode == 37) {
+            leftPressed = false;
+        }
+    }
+
+    function startGame() {
+        ballX = canvas.width/2,
+        ballY = canvas.height-30,
+        dx = -2, // X direction of ball
+        dy = -2, // Y direction of ball
+        ballRadius = 10,
+        ballColor = "#0095DD",
+        topBlocks = [
+            {'x':5, 'y':5},
+            {'x':123, 'y':5},
+            {'x':241, 'y':5},
+            {'x':359, 'y':5}
+        ];
+
+        document.getElementById("gameMessages").innerText = '';
+        document.getElementById("startButton").className = 'hidden';
+        window.gamePlay = setInterval(render, 10);
+        endOfGame = false;
+    }
+
+    function endGame(result) {
+
+        if (endOfGame === false) {
+            if (result === 'win') {
+                document.getElementById("gameMessages").className = 'good';
+                document.getElementById("gameMessages").innerText = 'YOU WIN!';
+                clearInterval(window.gamePlay);
+            } else if (result === 'lose') {
+                document.getElementById("gameMessages").className = 'bad';
+                document.getElementById("gameMessages").innerText = 'GAME OVER!';
+                document.getElementById("startButton").className = '';
+                setTimeout(function(){clearInterval(window.gamePlay)}, 300);
+            }
+            endOfGame = true;
+        }
+    }
+
+    drawPaddle();
+    drawBlocks();
+
+</script>
+
+</body>
+</html>
