@@ -15,167 +15,172 @@
     </div>
 </div>
 
+<script type="text/javascript" src="game.js"></script>
+<script type="text/javascript" src="ball.js"></script>
+<script type="text/javascript" src="block.js"></script>
+<script type="text/javascript" src="paddle.js"></script>
+<script type="text/javascript" src="app.js"></script>
 <script>
-    var canvas = document.getElementById("myCanvas"),
-    ctx = canvas.getContext("2d"),
-    paddleHeight = 10,
-    paddleWidth = 75,
-    paddleX = (canvas.width-paddleWidth)/2,
-    blockHeight = 30,
-    blockWidth = 113,
-    ballX, // X position of ball
-    ballY, // Y position of ball
-    dx, // X direction of ball
-    dy, // Y direction of ball
-    ballRadius,
-    ballColor,
-    rightPressed = false,
-    leftPressed = false,
-    endOfGame = false,
-    topBlocks = [];
+    // var canvas = document.getElementById("myCanvas"),
+    // ctx = canvas.getContext("2d"),
+    // paddleHeight = 10,
+    // paddleWidth = 75,
+    // paddleX = (canvas.width-paddleWidth)/2,
+    // blockHeight = 30,
+    // blockWidth = 113,
+    // ballX, // X position of ball
+    // ballY, // Y position of ball
+    // dx, // X direction of ball
+    // dy, // Y direction of ball
+    // ballRadius,
+    // ballColor,
+    // rightPressed = false,
+    // leftPressed = false,
+    // endOfGame = false,
+    // topBlocks = [];
 
-    function drawBall() {
-        ctx.beginPath();
-        ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
-        ctx.fillStyle = ballColor;
-        ctx.fill();
-        ctx.closePath;
-    }
+    // function drawBall() {
+    //     ctx.beginPath();
+    //     ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
+    //     ctx.fillStyle = ballColor;
+    //     ctx.fill();
+    //     ctx.closePath;
+    // }
 
-    function drawPaddle() {
-        ctx.beginPath();
-        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-    }
+    // function drawPaddle() {
+    //     ctx.beginPath();
+    //     ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+    //     ctx.fillStyle = "#0095DD";
+    //     ctx.fill();
+    //     ctx.closePath();
+    // }
 
-    function drawBlocks() {
-        for (var i = 0; i < topBlocks.length; i++) {
-            ctx.beginPath();
-            ctx.rect(topBlocks[i].x, topBlocks[i].y, blockWidth, blockHeight);
-            ctx.fillStyle = '#da7b29';
-            ctx.fill();
-            ctx.closePath();
-        }
-    }
+    // function drawBlocks() {
+    //     for (var i = 0; i < topBlocks.length; i++) {
+    //         ctx.beginPath();
+    //         ctx.rect(topBlocks[i].x, topBlocks[i].y, blockWidth, blockHeight);
+    //         ctx.fillStyle = '#da7b29';
+    //         ctx.fill();
+    //         ctx.closePath();
+    //     }
+    // }
 
-    function randomColor() {
-        return '#'+(Math.random().toString(16) + '0000000').slice(2, 8);
-    }
+    // function randomColor() {
+    //     return '#'+(Math.random().toString(16) + '0000000').slice(2, 8);
+    // }
 
-    function render() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawBall();
-        drawPaddle();
-        drawBlocks();
+    // function render() {
+    //     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //     drawBall();
+    //     drawPaddle();
+    //     drawBlocks();
         
-        if (rightPressed && paddleX < canvas.width-paddleWidth) {
-            paddleX += 7;
-        } else if (leftPressed && paddleX > 0) {
-            paddleX -= 7;
-        }
+    //     if (rightPressed && paddleX < canvas.width-paddleWidth) {
+    //         paddleX += 7;
+    //     } else if (leftPressed && paddleX > 0) {
+    //         paddleX -= 7;
+    //     }
 
-        // Canvas left, right bounds collision detection for ball
-        if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
-            dx = -dx;
-        }
+    //     // Canvas left, right bounds collision detection for ball
+    //     if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
+    //         dx = -dx;
+    //     }
 
-        // Bounce off top
-        if (ballY + dy < ballRadius) {
-            dy = -dy;
-        // Check for paddle collision
-        } else if (ballY + dy > canvas.height - ballRadius - paddleHeight) {
-            if (ballX > paddleX && ballX < paddleX+paddleWidth) {
-                dy = -dy;
-                ballColor = randomColor();
-            } else {
-                endGame('lose');
-            }
-        }
+    //     // Bounce off top
+    //     if (ballY + dy < ballRadius) {
+    //         dy = -dy;
+    //     // Check for paddle collision
+    //     } else if (ballY + dy > canvas.height - ballRadius - paddleHeight) {
+    //         if (ballX > paddleX && ballX < paddleX+paddleWidth) {
+    //             dy = -dy;
+    //             ballColor = randomColor();
+    //         } else {
+    //             endGame('lose');
+    //         }
+    //     }
 
-        // Check for blocks collision
-        if (blockCollisions(ballX + dx, ballY + dy) === true) {
-            if (topBlocks.length > 0) {
-                dy = -dy;
-            } else {
-                endGame('win');
-            }
-        }
+    //     // Check for blocks collision
+    //     if (blockCollisions(ballX + dx, ballY + dy) === true) {
+    //         if (topBlocks.length > 0) {
+    //             dy = -dy;
+    //         } else {
+    //             endGame('win');
+    //         }
+    //     }
 
-        ballX += dx;
-        ballY += dy;
-    }
+    //     ballX += dx;
+    //     ballY += dy;
+    // }
 
-    function blockCollisions(ballX, ballY) {
-        for (var i = 0; i < topBlocks.length; i++) {
-            if (ballY < topBlocks[i].y+blockHeight+ballRadius && ballX+ballRadius > topBlocks[i].x && ballX-ballRadius < topBlocks[i].x+blockWidth ) {
-                ctx.clearRect(topBlocks[i].x, topBlocks[i].y, blockWidth, blockHeight);
-                topBlocks.splice(i, 1);
-                return true;
-            }
-        }
-    }
+    // function blockCollisions(ballX, ballY) {
+    //     for (var i = 0; i < topBlocks.length; i++) {
+    //         if (ballY < topBlocks[i].y+blockHeight+ballRadius && ballX+ballRadius > topBlocks[i].x && ballX-ballRadius < topBlocks[i].x+blockWidth ) {
+    //             ctx.clearRect(topBlocks[i].x, topBlocks[i].y, blockWidth, blockHeight);
+    //             topBlocks.splice(i, 1);
+    //             return true;
+    //         }
+    //     }
+    // }
 
-    document.addEventListener("keydown", keyDownHandler, false);
-    document.addEventListener("keyup", keyUpHandler, false);
-    document.getElementById('startButton').addEventListener('click', startGame);
+    // document.addEventListener("keydown", keyDownHandler, false);
+    // document.addEventListener("keyup", keyUpHandler, false);
+    // document.getElementById('startButton').addEventListener('click', startGame);
 
-    function keyDownHandler(e) {
-        if (e.keyCode == 39) {
-            rightPressed = true;
-        } else if (e.keyCode == 37) {
-            leftPressed = true;
-        }
-    }
+    // function keyDownHandler(e) {
+    //     if (e.keyCode == 39) {
+    //         rightPressed = true;
+    //     } else if (e.keyCode == 37) {
+    //         leftPressed = true;
+    //     }
+    // }
 
-    function keyUpHandler(e) {
-        if (e.keyCode == 39) {
-            rightPressed = false;
-        } else if (e.keyCode == 37) {
-            leftPressed = false;
-        }
-    }
+    // function keyUpHandler(e) {
+    //     if (e.keyCode == 39) {
+    //         rightPressed = false;
+    //     } else if (e.keyCode == 37) {
+    //         leftPressed = false;
+    //     }
+    // }
 
-    function startGame() {
-        ballX = canvas.width/2,
-        ballY = canvas.height-30,
-        dx = -2, // X direction of ball
-        dy = -2, // Y direction of ball
-        ballRadius = 10,
-        ballColor = "#0095DD",
-        topBlocks = [
-            {'x':5, 'y':5},
-            {'x':123, 'y':5},
-            {'x':241, 'y':5},
-            {'x':359, 'y':5}
-        ];
+    // function startGame() {
+    //     ballX = canvas.width/2,
+    //     ballY = canvas.height-30,
+    //     dx = -2, // X direction of ball
+    //     dy = -2, // Y direction of ball
+    //     ballRadius = 10,
+    //     ballColor = "#0095DD",
+    //     topBlocks = [
+    //         {'x':5, 'y':5},
+    //         {'x':123, 'y':5},
+    //         {'x':241, 'y':5},
+    //         {'x':359, 'y':5}
+    //     ];
 
-        document.getElementById("gameMessages").innerText = '';
-        document.getElementById("startButton").className = 'hidden';
-        window.gamePlay = setInterval(render, 10);
-        endOfGame = false;
-    }
+    //     document.getElementById("gameMessages").innerText = '';
+    //     document.getElementById("startButton").className = 'hidden';
+    //     window.gamePlay = setInterval(render, 10);
+    //     endOfGame = false;
+    // }
 
-    function endGame(result) {
+    // function endGame(result) {
 
-        if (endOfGame === false) {
-            if (result === 'win') {
-                document.getElementById("gameMessages").className = 'good';
-                document.getElementById("gameMessages").innerText = 'YOU WIN!';
-                clearInterval(window.gamePlay);
-            } else if (result === 'lose') {
-                document.getElementById("gameMessages").className = 'bad';
-                document.getElementById("gameMessages").innerText = 'GAME OVER!';
-                document.getElementById("startButton").className = '';
-                setTimeout(function(){clearInterval(window.gamePlay)}, 300);
-            }
-            endOfGame = true;
-        }
-    }
+    //     if (endOfGame === false) {
+    //         if (result === 'win') {
+    //             document.getElementById("gameMessages").className = 'good';
+    //             document.getElementById("gameMessages").innerText = 'YOU WIN!';
+    //             clearInterval(window.gamePlay);
+    //         } else if (result === 'lose') {
+    //             document.getElementById("gameMessages").className = 'bad';
+    //             document.getElementById("gameMessages").innerText = 'GAME OVER!';
+    //             document.getElementById("startButton").className = '';
+    //             setTimeout(function(){clearInterval(window.gamePlay)}, 300);
+    //         }
+    //         endOfGame = true;
+    //     }
+    // }
 
-    drawPaddle();
-    drawBlocks();
+    // drawPaddle();
+    // drawBlocks();
 
 </script>
 
