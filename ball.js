@@ -17,3 +17,8 @@ Ball.prototype.Draw = function(game) {
     game.ctx.fill();
     game.ctx.closePath;
 }
+Ball.prototype.Kill = function(game) {
+    game.ctx.beginPath();
+    game.ctx.clearRect(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2 );
+    game.ctx.closePath();
+}
