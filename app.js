@@ -7,6 +7,7 @@ function randomColor() {
 var g = new Game();
 
 var startButton = document.getElementById("startButton");
+var gameScore = document.getElementById("gameScore");
 
 startButton.addEventListener('click', function(){
     g.Start();

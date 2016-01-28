@@ -19,4 +19,8 @@ function Level(levelNumber, game) {
 	    {'x':241, 'y':5},
 	    {'x':359, 'y':5}
 	];
+
+	this.paddleWidth = 75;
+	this.paddleHeight = 10;
+	this.paddlex = game.canvas.width/2;
 }

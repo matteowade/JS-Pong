@@ -1,11 +1,11 @@
 @keyframes bad {
-    from {color: black;}
-    to {color: red;}
+    0% { color: black; }
+    100% { color: red; }
 }
 
 @keyframes good {
-    from {color: black;}
-    to {color: green;}
+    0% { color: black; }
+    100% { color: green; }
 }
 
 .game-area {
@@ -37,21 +37,27 @@ canvas {
     font-weight: bold;
     margin: 10px auto 10px auto;
     text-align: center;
-    .bad {
-        animation-name: bad;
-        animation-duration: .1s;
-        animation-iteration-count: infinite;
+    &.bad {
+        animation: bad .1s infinite;
     }
 
-    .good {
-        animation-name: good;
-        animation-duration: .1s;
-        animation-iteration-count: infinite;
+    &.good {
+        animation: good .1s infinite;
     }
 }
 
 #gameScore {
+    display: none;
     margin: 10px auto 10px auto;
+    opacity: 1;
+    transition: opacity .75s;
+    &.visible {
+        display: block;
+        opacity: 1;
+    }
+    &.fadeout {
+        opacity: 0;
+    }
 }
 
 button {
