@@ -42,7 +42,8 @@ Game.prototype.End = function(result) {
             this.levelNum++;
             startButton.innerText = "Play Level " + this.levelNum;
             startButton.className = '';
-            this.ball.Kill(this);
+            // this.ball.Kill(this);
+            this.KillObject(this.ball, 'arc');
         } else if (result === 'lose') {
             this.messages.className = 'bad';
             this.messages.innerText = 'GAME OVER!';
@@ -88,6 +89,22 @@ Game.prototype.RenderObject = function(renderObject, renderType) {
     }
     this.ctx.fillStyle = renderObject.fillStyle;
     this.ctx.fill();
+    this.ctx.closePath();
+}
+
+Game.prototype.KillObject = function(renderObject, renderType) {
+    this.ctx.beginPath();
+    if (renderType === undefined) {
+        renderType = 'rect';
+    }
+    switch (renderType) {
+        case 'rect':
+            this.ctx.clearRect(renderObject.x, renderObject.y, renderObject.width, renderObject.height);
+            break;
+        case 'arc':
+            game.ctx.clearRect(renderObject.x - renderObject.radius, renderObject.y - renderObject.radius, renderObject.radius * 2, renderObject.radius * 2 );
+            break;
+    }
     this.ctx.closePath();
 }
 
