@@ -23,4 +23,5 @@ function Level(levelNumber, game) {
 	this.paddleWidth = 75;
 	this.paddleHeight = 10;
 	this.paddlex = game.canvas.width/2;
+	this.paddleSpeed = 20;
 }

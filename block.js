@@ -6,6 +6,7 @@ function Block(x, y, width, height) {
     this.y = y;
     this.height = height;
     this.width = width;
+    this.fillStyle = '#da7b29';
 }
 
 Block.prototype.Draw = function(game) {

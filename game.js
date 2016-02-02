@@ -15,14 +15,14 @@ Game.prototype.Start = function() {
     var thisGame = this;
     this.level = new Level(this.levelNum, thisGame);
     this.ball = new Ball(this.level.Ballx, this.level.Bally, this.level.Balldx, this.level.Balldy, this.level.Ballradius, this.level.Ballcolor);
-    this.paddle = new Paddle(this.level.paddlex, this.level.paddleHeight, this.level.paddleWidth);
+    this.paddle = new Paddle(this.level.paddlex, this.canvas.height-this.level.paddleHeight, this.level.paddleHeight, this.level.paddleWidth);
     this.blocks = [];
     for (var i = 0; i < this.level.blockCoordinates.length; i++) {
         var newBlock = new Block(this.level.blockCoordinates[i].x, this.level.blockCoordinates[i].y, this.level.blockWidth, this.level.blockHeight);
         this.blocks.push(newBlock);
     }
-    document.addEventListener("keydown", function(){thisGame.paddle.keyDownHandler()}, false);
-    document.addEventListener("keyup", function(){thisGame.paddle.keyUpHandler()}, false);
+    document.addEventListener("keydown", function(){thisGame.keyHandler(event)}, false);
+    document.addEventListener("keyup", function(){thisGame.keyHandler(event)}, false);
 
     this.messages.innerText = '';
     startButton.className = 'hidden';
@@ -72,11 +72,29 @@ Game.prototype.hideScore = function() {
     gameScore.innerText = 'Score: ' + this.score;
     gameScore.classList.remove('visible', 'fadeout');
 }
-
+Game.prototype.RenderObject = function(renderObject, renderType) {
+    this.ctx.beginPath();
+    if (renderType === undefined) {
+        renderType = 'rect';
+        console.log('rect test');
+    }
+    switch (renderType) {
+        case 'rect':
+            this.ctx.rect(renderObject.x, renderObject.y, renderObject.width, renderObject.height);
+            break;
+        case 'arc':
+            this.ctx.arc(renderObject.x, renderObject.y, renderObject.radius, 0, Math.PI*2);
+            break;
+    }
+    this.ctx.fillStyle = renderObject.fillStyle;
+    this.ctx.fill();
+    this.ctx.closePath();
+}
 Game.prototype.Render = function() {
+    var thisGame = this;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ball.Draw(this);
-    this.paddle.Draw(this);
+    this.RenderObject(this.ball, 'arc');
+    this.RenderObject(this.paddle, 'rect');
     for (var i = 0; i < this.blocks.length; i++) {
         this.blocks[i].Draw(this);
     }
@@ -113,6 +131,33 @@ Game.prototype.Render = function() {
         }
     }
 
+    // Move Ball
     this.ball.x += this.ball.dx;
     this.ball.y += this.ball.dy;
+
+    // Move Paddle
+    if (this.rightPressed === true) {
+        // move paddle right
+        this.paddle.Move('right', this.canvas.width);
+    }
+    if (this.leftPressed === true) {
+        // move paddle left
+        this.paddle.Move('left', this.canvas.width);
+    }
+}
+
+Game.prototype.keyHandler = function(event) {
+    if (event.keyCode == 39) {
+        if (event.type === 'keydown') {
+            this.rightPressed = true;
+        } else {
+            this.rightPressed = false;
+        }
+    } else if (event.keyCode == 37) {
+        if (event.type === 'keydown') {
+            this.leftPressed = true;
+        } else {
+            this.leftPressed = false;
+        }
+    }
 }
