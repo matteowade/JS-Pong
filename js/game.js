@@ -13,7 +13,6 @@ function Game() {
 
 Game.prototype.Start = function() {
     var thisGame = this;
-
     this.inputManager   = new KeyboardManager();
     this.level          = new Level(this.levelNum, thisGame);
     this.ball           = new Ball(this.level.Ballx, this.level.Bally, this.level.Balldx, this.level.Balldy, this.level.Ballradius, this.level.Ballcolor);
@@ -23,7 +22,6 @@ Game.prototype.Start = function() {
         var newBlock = new Block(this.level.blockCoordinates[i].x, this.level.blockCoordinates[i].y, this.level.blockWidth, this.level.blockHeight);
         this.blocks.push(newBlock);
     }
-
     this.messages.innerText = '';
     startButton.className = 'hidden';
     if (this.levelNum === 1) {
@@ -42,7 +40,7 @@ Game.prototype.End = function(result) {
             this.levelNum++;
             startButton.innerText = "Play Level " + this.levelNum;
             startButton.className = '';
-            this.ball.Kill(this);
+            this.KillObject(this.ball, 'arc');
         } else if (result === 'lose') {
             this.messages.className = 'bad';
             this.messages.innerText = 'GAME OVER!';
@@ -77,7 +75,6 @@ Game.prototype.RenderObject = function(renderObject, renderType) {
     this.ctx.beginPath();
     if (renderType === undefined) {
         renderType = 'rect';
-        console.log('rect test');
     }
     switch (renderType) {
         case 'rect':
@@ -92,41 +89,48 @@ Game.prototype.RenderObject = function(renderObject, renderType) {
     this.ctx.closePath();
 }
 
+Game.prototype.KillObject = function(renderObject, renderType) {
+    this.ctx.beginPath();
+    if (renderType === undefined) {
+        renderType = 'rect';
+    }
+    switch (renderType) {
+        case 'rect':
+            this.ctx.clearRect(renderObject.x, renderObject.y, renderObject.width, renderObject.height);
+            break;
+        case 'arc':
+            this.ctx.clearRect(renderObject.x - renderObject.radius, renderObject.y - renderObject.radius, renderObject.radius * 2, renderObject.radius * 2 );
+            break;
+    }
+    this.ctx.closePath();
+}
+
 Game.prototype.Render = function() {
     var thisGame = this;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.RenderObject(this.ball, 'arc');
-
-    this.paddle.Move(this.inputManager.direction);
     this.RenderObject(this.paddle, 'rect');
+    this.paddle.Move(this.inputManager.direction);
     for (var i = 0; i < this.blocks.length; i++) {
-        this.blocks[i].Draw(this);
+        this.RenderObject(this.blocks[i], 'rect');
     }
     
-    // Canvas left, right bounds collision detection for ball
-    if (this.ball.x + this.ball.dx > this.canvas.width - this.ball.radius || this.ball.x + this.ball.dx < this.ball.radius) {
-        this.ball.dx = -this.ball.dx;
-    }
+    // Check for ball/canvas collision
+    this.ball.CheckCanvasCollision(this.canvas.width);
 
-    // Bounce off top
-    if (this.ball.y + this.ball.dy < this.ball.radius) {
-        this.ball.dy = -this.ball.dy;
     // Check for paddle collision
-    } else if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius - this.paddle.height) {
-        if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x+this.paddle.width) {
-            this.ball.dy = -this.ball.dy;
-            this.ball.color = randomColor();
-        } else {
-            this.End('lose');
-        }
+    var paddleCollision = this.ball.CheckPaddleCollision(this.canvas.height, this.paddle.x, this.paddle.width, this.paddle.height);
+    if (paddleCollision === false) {
+        this.End('lose');
     }
 
     // Check for blocks collision
     for (var i = 0; i < this.blocks.length; i++) {
-        if (this.blocks[i].Collide(this.ball, this) === true) {
+        if (this.ball.CheckBlockCollision(this.blocks[i]) === true) {
+            this.KillObject('this.blocks[i]', 'rect');
             this.blocks.splice(i, 1);
             if (this.blocks.length > 0) {
-                this.ball.dy = -this.ball.dy;
+                this.ball.ReverseYDirection();
                 this.score = this.score+this.level.scorePointValue;
                 this.showScore();
             } else {
@@ -136,8 +140,5 @@ Game.prototype.Render = function() {
     }
 
     // Move Ball
-    this.ball.x += this.ball.dx;
-    this.ball.y += this.ball.dy;
+    this.ball.Move();
 }
-
-
