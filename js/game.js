@@ -30,6 +30,7 @@ Game.prototype.Start = function() {
     this.level          = new Level(this.levelNum, this.canvas.width, this.canvas.height);
     this.ball           = new Ball(this.level.Ballx, this.level.Bally, this.level.Balldx, this.level.Balldy, this.level.Ballradius, this.level.Ballcolor);
     this.userPaddle         = new Paddle(this.level.paddlex, this.canvas.height-this.level.paddleHeight, this.level.paddleHeight, this.level.paddleWidth, this.canvas.width, 5);
+    this.opponentPaddle         = new Paddle(this.level.paddlex, 0, this.level.paddleHeight, this.level.paddleWidth, this.canvas.width, 5);
     // this.blocks         = [];
     // for (var i = 0; i < this.level.blockCoordinates.length; i++) {
     //     var newBlock = new Block(this.level.blockCoordinates[i].x, this.level.blockCoordinates[i].y, this.level.blockWidth, this.level.blockHeight);
@@ -125,6 +126,7 @@ Game.prototype.Render = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.RenderObject(this.ball, 'arc');
     this.RenderObject(this.userPaddle, 'rect');
+    this.RenderObject(this.opponentPaddle, 'rect');
     this.userPaddle.Move(this.inputManager.direction);
     // for (var i = 0; i < this.blocks.length; i++) {
     //     this.RenderObject(this.blocks[i], 'rect');
