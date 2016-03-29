@@ -1,13 +1,13 @@
 "use strict";
 
 // PADDLE //
-function Paddle(x, y, height, width, maxWidth) {
+function Paddle(x, y, height, width, maxWidth, speed) {
     this.height     = height;
     this.width      = width;
     this.x          = x;
     this.y          = y;
     this.fillStyle  = '#0095DD';
-    this.speed      = 5;
+    this.speed      = speed;
     this.maxWidth   = maxWidth;
 }
 

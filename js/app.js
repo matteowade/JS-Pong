@@ -5,7 +5,7 @@ function randomColor() {
 }
 
 var g = new Game();
-
+g.SizeCanvas();
 var startButton = document.getElementById("startButton");
 var gameScore = document.getElementById("gameScore");
 

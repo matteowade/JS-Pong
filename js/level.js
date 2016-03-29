@@ -1,10 +1,10 @@
 "use strict";
 
 // LEVEL //
-function Level(levelNumber, game) {
+function Level(levelNumber, canvasWidth, canvasHeight) {
 	this.scorePointValue = 50*levelNumber;
-	this.Ballx = game.canvas.width/2;
-    this.Bally = game.canvas.height-30;
+	this.Ballx = canvasWidth/2;
+    this.Bally = canvasHeight/3;
     this.Balldx = -2;
     this.Balldy = -2;
     this.Ballradius = 10;
@@ -22,6 +22,6 @@ function Level(levelNumber, game) {
 
 	this.paddleWidth = 75;
 	this.paddleHeight = 10;
-	this.paddlex = game.canvas.width/2;
+	this.paddlex = canvasWidth/2;
 	this.paddleSpeed = 5;
 }

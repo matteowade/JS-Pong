@@ -9,19 +9,32 @@ function Game() {
     this.end = false;
     this.levelNum = 1;
     this.score = 0;
+    // this.canvasWidthMultiplier = 1;
+    // this.canvasHeightMultiplier = 1;
+}
+
+Game.prototype.SizeCanvas = function() {
+    // this.canvas.width = window.innerWidth;
+    // this.canvas.height = window.innerHeight;
+    this.canvas.width = 480;
+    this.canvas.height = 320;
+    // this.canvasWidthMultiplier = this.canvas.width/480;
+    // this.canvasHeightMultiplier = this.canvas.height/320;
+    // console.log(this.canvasWidthMultiplier);
 }
 
 Game.prototype.Start = function() {
     var thisGame = this;
+    this.SizeCanvas();
     this.inputManager   = new KeyboardManager();
-    this.level          = new Level(this.levelNum, thisGame);
+    this.level          = new Level(this.levelNum, this.canvas.width, this.canvas.height);
     this.ball           = new Ball(this.level.Ballx, this.level.Bally, this.level.Balldx, this.level.Balldy, this.level.Ballradius, this.level.Ballcolor);
-    this.paddle         = new Paddle(this.level.paddlex, this.canvas.height-this.level.paddleHeight, this.level.paddleHeight, this.level.paddleWidth, this.canvas.width);
-    this.blocks         = [];
-    for (var i = 0; i < this.level.blockCoordinates.length; i++) {
-        var newBlock = new Block(this.level.blockCoordinates[i].x, this.level.blockCoordinates[i].y, this.level.blockWidth, this.level.blockHeight);
-        this.blocks.push(newBlock);
-    }
+    this.userPaddle         = new Paddle(this.level.paddlex, this.canvas.height-this.level.paddleHeight, this.level.paddleHeight, this.level.paddleWidth, this.canvas.width, 5);
+    // this.blocks         = [];
+    // for (var i = 0; i < this.level.blockCoordinates.length; i++) {
+    //     var newBlock = new Block(this.level.blockCoordinates[i].x, this.level.blockCoordinates[i].y, this.level.blockWidth, this.level.blockHeight);
+    //     this.blocks.push(newBlock);
+    // }
     this.messages.innerText = '';
     startButton.className = 'hidden';
     if (this.levelNum === 1) {
@@ -76,6 +89,7 @@ Game.prototype.RenderObject = function(renderObject, renderType) {
     if (renderType === undefined) {
         renderType = 'rect';
     }
+
     switch (renderType) {
         case 'rect':
             this.ctx.rect(renderObject.x, renderObject.y, renderObject.width, renderObject.height);
@@ -107,37 +121,38 @@ Game.prototype.KillObject = function(renderObject, renderType) {
 
 Game.prototype.Render = function() {
     var thisGame = this;
+    this.SizeCanvas();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.RenderObject(this.ball, 'arc');
-    this.RenderObject(this.paddle, 'rect');
-    this.paddle.Move(this.inputManager.direction);
-    for (var i = 0; i < this.blocks.length; i++) {
-        this.RenderObject(this.blocks[i], 'rect');
-    }
+    this.RenderObject(this.userPaddle, 'rect');
+    this.userPaddle.Move(this.inputManager.direction);
+    // for (var i = 0; i < this.blocks.length; i++) {
+    //     this.RenderObject(this.blocks[i], 'rect');
+    // }
     
     // Check for ball/canvas collision
     this.ball.CheckCanvasCollision(this.canvas.width);
 
     // Check for paddle collision
-    var paddleCollision = this.ball.CheckPaddleCollision(this.canvas.height, this.paddle.x, this.paddle.width, this.paddle.height);
+    var paddleCollision = this.ball.CheckPaddleCollision(this.canvas.height, this.userPaddle.x, this.userPaddle.width, this.userPaddle.height);
     if (paddleCollision === false) {
         this.End('lose');
     }
 
     // Check for blocks collision
-    for (var i = 0; i < this.blocks.length; i++) {
-        if (this.ball.CheckBlockCollision(this.blocks[i]) === true) {
-            this.KillObject('this.blocks[i]', 'rect');
-            this.blocks.splice(i, 1);
-            if (this.blocks.length > 0) {
-                this.ball.ReverseYDirection();
-                this.score = this.score+this.level.scorePointValue;
-                this.showScore();
-            } else {
-                this.End('win');
-            }
-        }
-    }
+    // for (var i = 0; i < this.blocks.length; i++) {
+    //     if (this.ball.CheckBlockCollision(this.blocks[i]) === true) {
+    //         this.KillObject('this.blocks[i]', 'rect');
+    //         this.blocks.splice(i, 1);
+    //         if (this.blocks.length > 0) {
+    //             this.ball.ReverseYDirection();
+    //             this.score = this.score+this.level.scorePointValue;
+    //             this.showScore();
+    //         } else {
+    //             this.End('win');
+    //         }
+    //     }
+    // }
 
     // Move Ball
     this.ball.Move();
