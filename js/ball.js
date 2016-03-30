@@ -25,9 +25,9 @@ Ball.prototype.CheckCanvasCollision = function(canvasWidth) {
         this.dx = -this.dx;
     }
     // top collision
-    if (this.y + this.dy < this.radius) {
-        this.dy = -this.dy;
-    }
+    // if (this.y + this.dy < this.radius) {
+    //     this.dy = -this.dy;
+    // }
 }
 
 Ball.prototype.CheckPaddleCollision = function(canvasHeight, paddleX, paddleWidth, paddleHeight) {
@@ -42,8 +42,19 @@ Ball.prototype.CheckPaddleCollision = function(canvasHeight, paddleX, paddleWidt
     }
 }
 
-Ball.prototype.CheckBlockCollision = function(block) {
-    if (this.y < block.y+block.height+this.radius && this.x+this.radius > block.x && this.x-this.radius < block.x+block.width ) {
-        return true;
+Ball.prototype.getDirection = function() {
+    // this.direction = 'right';
+    // console.log(this.dx);
+    if (this.dx > 0) {
+        return "right";
+    } else {
+        return "left";
     }
+    // return this.direction;
 }
+
+// Ball.prototype.CheckBlockCollision = function(block) {
+//     if (this.y < block.y+block.height+this.radius && this.x+this.radius > block.x && this.x-this.radius < block.x+block.width ) {
+//         return true;
+//     }
+// }
