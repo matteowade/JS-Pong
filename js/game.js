@@ -141,15 +141,18 @@ Game.prototype.Render = function() {
 
     // Check for user paddle collision
     var userPaddleCollision = this.ball.CheckUserPaddleCollision(this.canvas.height, this.userPaddle.x, this.userPaddle.width, this.userPaddle.height);
-    if (userPaddleCollision === false) {
+    if (userPaddleCollision !== "undefined" && userPaddleCollision === false) {
         this.End('lose');
+    }
+    if (userPaddleCollision !== "undefined" && userPaddleCollision === true) {
+        this.score = this.score+this.level.scorePointValue;
     }
 
     // Check for opponent paddle collision
     var opponentPaddleCollision = this.ball.CheckOpponentPaddleCollision(this.opponentPaddle.x, this.opponentPaddle.width, this.opponentPaddle.height);
-    if (opponentPaddleCollision === true) {
-        console.log("collide");
-    }
+    // if (opponentPaddleCollision === true) {
+    //     console.log("collide");
+    // }
     // Check for blocks collision
     // for (var i = 0; i < this.blocks.length; i++) {
     //     if (this.ball.CheckBlockCollision(this.blocks[i]) === true) {
