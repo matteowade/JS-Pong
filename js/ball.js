@@ -30,11 +30,23 @@ Ball.prototype.CheckCanvasCollision = function(canvasWidth) {
     // }
 }
 
-Ball.prototype.CheckPaddleCollision = function(canvasHeight, paddleX, paddleWidth, paddleHeight) {
+Ball.prototype.CheckUserPaddleCollision = function(canvasHeight, paddleX, paddleWidth, paddleHeight) {
     if (this.y + this.dy > canvasHeight - this.radius - paddleHeight) {
         if (this.x > paddleX && this.x < paddleX+paddleWidth) {
             this.dy = -this.dy;
             this.color = randomColor();
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+Ball.prototype.CheckOpponentPaddleCollision = function(paddleX, paddleWidth, paddleHeight) {
+    if (this.y + this.dy < paddleHeight + this.radius) {
+        if (this.x > paddleX && this.x < paddleX+paddleWidth) {
+            this.dy = -this.dy;
+            // this.color = randomColor();
             return true;
         } else {
             return false;
@@ -51,6 +63,10 @@ Ball.prototype.getDirection = function() {
         return "left";
     }
     // return this.direction;
+}
+
+Ball.prototype.getXSPeed = function() {
+    return Math.abs(this.dx);
 }
 
 // Ball.prototype.CheckBlockCollision = function(block) {

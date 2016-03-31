@@ -11,14 +11,20 @@ function Paddle(x, y, height, width, maxWidth, speed) {
     this.maxWidth   = maxWidth;
 }
 
-Paddle.prototype.Move = function(direction) {
+Paddle.prototype.Move = function(direction, speed) {
+    var moveSpeed;
+    if (speed) {
+        moveSpeed = speed;
+    } else {
+        moveSpeed = this.speed;
+    }
     if (direction === "right") {
         if( this.x < this.maxWidth-this.width) {
-            this.x += this.speed;
+            this.x += moveSpeed;
         }
     } else if (direction === "left") {
         if (this.x > 0) {
-            this.x -= this.speed;
+            this.x -= moveSpeed;
         }
     }
 }

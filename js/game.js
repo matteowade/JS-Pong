@@ -129,7 +129,7 @@ Game.prototype.Render = function() {
     this.RenderObject(this.opponentPaddle, 'rect');
     this.userPaddle.Move(this.userInputManager.direction);
     // this.opponentPaddle.Move(this.ball.getDirection);
-    this.opponentPaddle.Move(this.ball.getDirection());
+    this.opponentPaddle.Move(this.ball.getDirection(), this.ball.getXSPeed());
     // for (var i = 0; i < this.blocks.length; i++) {
     //     this.RenderObject(this.blocks[i], 'rect');
     // }
@@ -137,12 +137,17 @@ Game.prototype.Render = function() {
     // Check for ball/canvas collision
     this.ball.CheckCanvasCollision(this.canvas.width);
 
-    // Check for paddle collision
-    var paddleCollision = this.ball.CheckPaddleCollision(this.canvas.height, this.userPaddle.x, this.userPaddle.width, this.userPaddle.height);
-    if (paddleCollision === false) {
+    // Check for user paddle collision
+    var userPaddleCollision = this.ball.CheckUserPaddleCollision(this.canvas.height, this.userPaddle.x, this.userPaddle.width, this.userPaddle.height);
+    if (userPaddleCollision === false) {
         this.End('lose');
     }
 
+    // Check for opponent paddle collision
+    var opponentPaddleCollision = this.ball.CheckOpponentPaddleCollision(this.opponentPaddle.x, this.opponentPaddle.width, this.opponentPaddle.height);
+    if (opponentPaddleCollision === true) {
+        console.log("collide");
+    }
     // Check for blocks collision
     // for (var i = 0; i < this.blocks.length; i++) {
     //     if (this.ball.CheckBlockCollision(this.blocks[i]) === true) {
