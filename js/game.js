@@ -16,8 +16,8 @@ function Game() {
 Game.prototype.SizeCanvas = function() {
     // this.canvas.width = window.innerWidth;
     // this.canvas.height = window.innerHeight;
-    this.canvas.width = 480;
-    this.canvas.height = 320;
+    this.canvas.width = 700;
+    this.canvas.height = 500;
     // this.canvasWidthMultiplier = this.canvas.width/480;
     // this.canvasHeightMultiplier = this.canvas.height/320;
     // console.log(this.canvasWidthMultiplier);
@@ -62,7 +62,9 @@ Game.prototype.End = function(result) {
             startButton.innerText = "Start Over";
             startButton.className = '';
         }
-        clearInterval(window.gamePlay);
+        setTimeout(function() {
+            clearInterval(window.gamePlay);
+        }, 400);
         this.end = true;
         this.showScore();
     }

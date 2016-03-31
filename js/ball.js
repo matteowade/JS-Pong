@@ -34,7 +34,7 @@ Ball.prototype.CheckUserPaddleCollision = function(canvasHeight, paddleX, paddle
     if (this.y + this.dy > canvasHeight - this.radius - paddleHeight) {
         if (this.x > paddleX && this.x < paddleX+paddleWidth) {
             this.dy = -this.dy;
-            this.color = randomColor();
+            // this.color = randomColor();
             return true;
         } else {
             return false;
