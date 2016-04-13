@@ -16,8 +16,8 @@ function Game() {
 Game.prototype.SizeCanvas = function() {
     // this.canvas.width = window.innerWidth;
     // this.canvas.height = window.innerHeight;
-    this.canvas.width = 700;
-    this.canvas.height = 500;
+    this.canvas.width = 500;
+    this.canvas.height = 300;
     // this.canvasWidthMultiplier = this.canvas.width/480;
     // this.canvasHeightMultiplier = this.canvas.height/320;
     // console.log(this.canvasWidthMultiplier);

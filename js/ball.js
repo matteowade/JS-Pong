@@ -31,10 +31,11 @@ Ball.prototype.CheckCanvasCollision = function(canvasWidth) {
 }
 
 Ball.prototype.CheckUserPaddleCollision = function(canvasHeight, paddleX, paddleWidth, paddleHeight) {
-    if (this.y + this.dy > canvasHeight - this.radius - paddleHeight) {
-        if (this.x > paddleX && this.x < paddleX+paddleWidth) {
+    var xvalue = this.x;
+    var yvalue = this.y + this.radius;
+    if (yvalue > canvasHeight - paddleHeight) {
+        if (xvalue + this.radius > paddleX && xvalue - this.radius < paddleX+paddleWidth) {
             this.dy = -this.dy;
-            // this.color = randomColor();
             return true;
         } else {
             return false;
@@ -43,10 +44,11 @@ Ball.prototype.CheckUserPaddleCollision = function(canvasHeight, paddleX, paddle
 }
 
 Ball.prototype.CheckOpponentPaddleCollision = function(paddleX, paddleWidth, paddleHeight) {
-    if (this.y + this.dy < paddleHeight + this.radius) {
-        if (this.x > paddleX && this.x < paddleX+paddleWidth) {
+    var xvalue = this.x;
+    var yvalue = this.y - this.radius;
+    if (yvalue < paddleHeight) {
+        if (xvalue + this.radius > paddleX && xvalue - this.radius < paddleX+paddleWidth) {
             this.dy = -this.dy;
-            // this.color = randomColor();
             return true;
         } else {
             return false;
@@ -55,14 +57,11 @@ Ball.prototype.CheckOpponentPaddleCollision = function(paddleX, paddleWidth, pad
 }
 
 Ball.prototype.getDirection = function() {
-    // this.direction = 'right';
-    // console.log(this.dx);
     if (this.dx > 0) {
         return "right";
     } else {
         return "left";
     }
-    // return this.direction;
 }
 
 Ball.prototype.getXSPeed = function() {

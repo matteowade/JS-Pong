@@ -5,8 +5,8 @@ function Level(levelNumber, canvasWidth, canvasHeight) {
 	this.scorePointValue = 50*levelNumber;
 	this.Ballx = canvasWidth/2;
     this.Bally = canvasHeight/3;
-    this.Balldx = -2;
-    this.Balldy = 1;
+    this.Balldx = Math.random();
+    this.Balldy = 3;
     this.Ballradius = 10;
     this.Ballcolor = "#0095DD";
 
